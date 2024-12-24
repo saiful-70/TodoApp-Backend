@@ -4,16 +4,23 @@ using TodoApp.Application.Features.TaskItemFeatures;
 
 namespace TodoApp.HttpApi.Controllers;
 
-[Microsoft.AspNetCore.Components.Route("api/[controller]s")]
+[Route("api/[controller]s")]
 [ApiController]
 [Consumes("application/json")]
 [Produces("application/json")]
-public class TaskGroupController(ITaskGroupService taskGroupService): ControllerBase
+public class TaskGroupController : ControllerBase
 {
+    private readonly ITaskGroupService _taskGroupService;
+
+    public TaskGroupController(ITaskGroupService taskGroupService)
+    {
+        _taskGroupService = taskGroupService;
+    }
+    
     [HttpPost]
     public async Task<IActionResult> Post([FromBody] TaskGroupRequest taskGroupRequest)
     {
-        var result = await taskGroupService.CreateAsync(taskGroupRequest);
+        var result = await _taskGroupService.CreateAsync(taskGroupRequest);
 
         if (result.TryPickGoodOutcome(out var data))
         {
